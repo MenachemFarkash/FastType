@@ -10,7 +10,7 @@ function App() {
         "all's fair in love and war",
     ];
 
-    const [wordCount, setWordCount] = useState(30);
+    const [wordCount, setWordCount] = useState(20);
     const [currentPhrase, setCurrentPhrase] = useState(() => createPhrase());
     const [currentChar, setCurrentChar] = useState(0);
     const [startTime, setStartTime] = useState(null);
@@ -132,12 +132,23 @@ function App() {
                         );
                     })}
                 </h2>
-                <input autoFocus onKeyDown={(event) => handleKeyDown(event)} id="mainInput" type="text" />
+                <input
+                    autoFocus
+                    onKeyDown={(event) => handleKeyDown(event)}
+                    id="mainInput"
+                    type="text"
+                    className="mainInput"
+                    placeholder="Type Here"
+                />
                 {endTime > 0 && (
                     <>
-                        <p>Accuracy: {getAccuracy()}%</p>
+                        <h2 className="accuracyTitle">
+                            Accuracy: <span className="accuracy">{getAccuracy()}</span>%
+                        </h2>
                         <br />
-                        <p>WPM: {wordsPerMinute}</p>
+                        <h2 className="wpmTitle">
+                            WPM: <span className="wpm">{wordsPerMinute}</span>
+                        </h2>
                     </>
                 )}
             </header>
