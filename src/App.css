@@ -19,9 +19,9 @@
     height: 3rem;
     background-color: transparent;
     border: none;
-    border-bottom: 2px solid snow;
+    border-bottom: 2px solid rgba(255, 250, 250, 0.099);
     font-size: 1.5em;
-    color: lavender;
+    color: rgba(230, 230, 250, 0.631);
     text-align: center;
     padding-block: 0.5em;
     outline: none;
@@ -39,6 +39,28 @@
     line-height: 4rem;
     font-family: "Comfortaa", "Roboto Mono", "Vazirmatn";
     font-weight: 400;
+}
+
+.restartButton {
+    margin-top: 1rem;
+    cursor: pointer;
+}
+.restartButton p {
+    margin-top: -0.5rem;
+    font-size: 80%;
+}
+
+.wordCountButtons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.wordCountButtons button {
+    border: none;
+    font-family: "Comfortaa", "Roboto Mono", "Vazirmatn";
+    padding: 0.5rem;
+    background-color: rgb(213, 231, 231);
+    cursor: pointer;
 }
 
 .App {

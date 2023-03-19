@@ -1,7 +1,8 @@
 import logo from "./logo.svg";
 import "./App.css";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { mostCommonWords } from "./Words/english";
+import { FaRedo } from "react-icons/fa";
 
 function App() {
     const phrases = [
@@ -9,8 +10,7 @@ function App() {
         "a stitch in time saves nine",
         "all's fair in love and war",
     ];
-
-    const [wordCount, setWordCount] = useState(20);
+    const [wordCount, setWordCount] = useState(1);
     const [currentPhrase, setCurrentPhrase] = useState(() => createPhrase());
     const [currentChar, setCurrentChar] = useState(0);
     const [startTime, setStartTime] = useState(null);
@@ -21,11 +21,16 @@ function App() {
     const [letters, setLetters] = useState([]);
     const [activeChar, setActiveChar] = useState(0);
 
+    const elementPocus = useRef(null);
+
+    useEffect(() => {
+        restart();
+    }, [wordCount]);
+
     function handleKeyDown(event) {
         if (event.key === "Backspace") {
             setCurrentChar(currentChar - 1);
             letters.splice(-1);
-            console.log(letters);
             setActiveChar(activeChar - 1);
         } else if (event.key === " ") {
             document.getElementById("mainInput").value = "";
@@ -40,11 +45,9 @@ function App() {
             if (event.key === currentPhrase[currentChar]) {
                 setCorrectChars(correctChars + 1);
             } else {
-                // setIncorrectChars(incorrectChars + 1);
                 setIncorrectChars(incorrectChars + 1);
             }
             letters.push(event.key);
-            console.log(letters);
             setCurrentChar(currentChar + 1);
             setActiveChar(activeChar + 1);
 
@@ -54,10 +57,8 @@ function App() {
 
                 setEndTime((prevNumber) => {
                     const newNumber = prevNumber + Date.now();
-                    console.log(newNumber);
                     return newNumber;
                 });
-
                 endGame(timeTaken, endTime);
             }
         }
@@ -83,7 +84,6 @@ function App() {
             .map((word) => word + " ")
             .join("")
             .split("");
-        console.log(selectedWordsString);
         return selectedWordsString;
     }
 
@@ -92,19 +92,30 @@ function App() {
         if (totalChars === 0) {
             return 0;
         }
-        console.log(Math.round((correctChars / totalChars) * 100) + "%");
         return Math.round((correctChars / totalChars) * 100);
     }
 
     function endGame(time) {
-        console.table(time);
         getAccuracy();
-        console.log("correctChars: ", correctChars);
-        console.log("incorrectChars: ", incorrectChars);
-        console.log("endTime: ", endTime);
-        const totalTypedWords = currentPhrase.join("").split(" ").length;
-        setWordsPerMinute(((totalTypedWords / time) * 60).toFixed(2));
+        setWordsPerMinute(((letters.length / 5 / time) * 60).toFixed(2));
+        console.log(time);
+        console.log(wordsPerMinute);
     }
+
+    const restart = () => {
+        setCurrentPhrase(createPhrase());
+        setActiveChar(0);
+        setCorrectChars(0);
+        setIncorrectChars(0);
+        setStartTime(null);
+        setEndTime(0);
+        setWordsPerMinute(0);
+        setCurrentChar(0);
+        setLetters([]);
+        document.getElementById("mainInput").value = "";
+        elementPocus.current.focus();
+        console.log(elementPocus.current);
+    };
 
     return (
         <div className="App">
@@ -133,6 +144,8 @@ function App() {
                     })}
                 </h2>
                 <input
+                    ref={elementPocus}
+                    tabIndex={1}
                     autoFocus
                     onKeyDown={(event) => handleKeyDown(event)}
                     id="mainInput"
@@ -151,6 +164,44 @@ function App() {
                         </h2>
                     </>
                 )}
+                <div className="restartButton">
+                    <FaRedo tabIndex={2} onKeyDown={() => restart()} onClick={() => restart()} />
+                    <p>restart</p>
+                </div>
+                <div className="wordCountButtons">
+                    <button
+                        type="text"
+                        onClick={() => {
+                            setWordCount(10);
+                        }}
+                    >
+                        10
+                    </button>
+                    <button
+                        type="text"
+                        onClick={(ev) => {
+                            setWordCount(15);
+                        }}
+                    >
+                        15
+                    </button>
+                    <button
+                        type="text"
+                        onClick={(ev) => {
+                            setWordCount(20);
+                        }}
+                    >
+                        20
+                    </button>
+                    <button
+                        type="text"
+                        onClick={(ev) => {
+                            setWordCount(30);
+                        }}
+                    >
+                        30
+                    </button>
+                </div>
             </header>
         </div>
     );
