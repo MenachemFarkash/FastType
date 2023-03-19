@@ -10,7 +10,7 @@ function App() {
         "a stitch in time saves nine",
         "all's fair in love and war",
     ];
-    const [wordCount, setWordCount] = useState(1);
+    const [wordCount, setWordCount] = useState(10);
     const [currentPhrase, setCurrentPhrase] = useState(() => createPhrase());
     const [currentChar, setCurrentChar] = useState(0);
     const [startTime, setStartTime] = useState(null);
