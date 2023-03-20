@@ -20,6 +20,7 @@ function App() {
     const [wordsPerMinute, setWordsPerMinute] = useState(0);
     const [letters, setLetters] = useState([]);
     const [activeChar, setActiveChar] = useState(0);
+    const [isPlaying, setIsPlaying] = useState(false);
 
     const elementPocus = useRef(null);
 
@@ -28,38 +29,42 @@ function App() {
     }, [wordCount]);
 
     function handleKeyDown(event) {
-        if (event.key === "Backspace") {
-            setCurrentChar(currentChar - 1);
-            letters.splice(-1);
-            setActiveChar(activeChar - 1);
-        } else if (event.key === " ") {
-            document.getElementById("mainInput").value = "";
-            letters.push(event.key);
-            setCurrentChar(currentChar + 1);
-            setActiveChar(activeChar + 1);
-        } else {
-            if (currentChar === 0) {
-                setStartTime(Date.now());
-            }
-            // Check if the char is correct or not
-            if (event.key === currentPhrase[currentChar]) {
-                setCorrectChars(correctChars + 1);
+        setIsPlaying(true);
+        if (isPlaying === true) {
+            if (event.key === "Backspace") {
+                setCurrentChar(currentChar - 1);
+                letters.splice(-1);
+                setActiveChar(activeChar - 1);
+            } else if (event.key === " ") {
+                document.getElementById("mainInput").value = "";
+                letters.push(event.key);
+                setCurrentChar(currentChar + 1);
+                setActiveChar(activeChar + 1);
             } else {
-                setIncorrectChars(incorrectChars + 1);
-            }
-            letters.push(event.key);
-            setCurrentChar(currentChar + 1);
-            setActiveChar(activeChar + 1);
+                if (currentChar === 0) {
+                    setStartTime(Date.now());
+                }
+                // Check if the char is correct or not
+                if (event.key === currentPhrase[currentChar]) {
+                    setCorrectChars(correctChars + 1);
+                } else {
+                    setIncorrectChars(incorrectChars + 1);
+                }
+                letters.push(event.key);
+                setCurrentChar(currentChar + 1);
+                setActiveChar(activeChar + 1);
 
-            // check if ended typing
-            if (currentChar === currentPhrase.length - 2) {
-                const timeTaken = (Date.now() - startTime) / 1000;
+                // check if ended typing
+                if (currentChar === currentPhrase.length - 2) {
+                    const timeTaken = (Date.now() - startTime) / 1000;
+                    setIsPlaying(false);
 
-                setEndTime((prevNumber) => {
-                    const newNumber = prevNumber + Date.now();
-                    return newNumber;
-                });
-                endGame(timeTaken, endTime);
+                    setEndTime((prevNumber) => {
+                        const newNumber = prevNumber + Date.now();
+                        return newNumber;
+                    });
+                    endGame(timeTaken, endTime);
+                }
             }
         }
     }
