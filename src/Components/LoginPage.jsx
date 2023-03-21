@@ -8,7 +8,11 @@ function LoginPage() {
     const addNameToLocalStorage = () => {
         const name = document.getElementById("nameInput").value;
         localStorage.setItem("name", name);
-        navigate("/game");
+        if (name === "") {
+            alert("Please enter a name");
+        } else {
+            navigate("/game");
+        }
     };
     return (
         <>

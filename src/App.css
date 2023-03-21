@@ -93,14 +93,35 @@
 .nameInput {
     background-color: transparent;
     border: none;
-    border-bottom: 1px solid black;
+    border-bottom: 2px solid black;
     margin-right: 1rem;
-    margin-top: 3rem;
+    margin-top: 25vh;
     text-align: center;
-    font-size: 5rem;
+    font-size: 4rem;
     font-family: var(--font);
     font-weight: 500;
     outline: none;
+    color: rgb(28, 108, 144);
+}
+
+.connectButton {
+    background-color: rgb(28, 108, 144);
+    border: none;
+    border-radius: 7px;
+    /* width: 10em; */
+    height: 3em;
+    padding: 1em;
+    font-size: 2rem;
+    font-family: var(--font);
+    cursor: pointer;
+}
+
+.leaderBoardTable thead > th,
+.leaderBoardTable > tbody td {
+    border: 1px solid black;
+    border-collapse: separate;
+    padding: 1rem;
+    text-align: center;
 }
 
 .App {

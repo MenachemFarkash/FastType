@@ -5,7 +5,7 @@ function LeaderBoard() {
         <div>
             <img className="logo" src="logo.png" alt="logo" />
             <h1>Record Table</h1>
-            <table>
+            <table className="leaderBoardTable">
                 <thead>
                     <th>name</th>
                     <th>accuracy</th>
