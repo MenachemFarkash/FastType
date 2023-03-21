@@ -1,5 +1,13 @@
 @import url("https://fonts.googleapis.com/css2?family=Comfortaa&family=Roboto+Mono&family=Vazirmatn&display=swap");
-
+:root {
+    --font: "Comfortaa", "Roboto Mono", "Vazirmatn";
+}
+.logo {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 5em;
+}
 .mainText {
     font-family: "Comfortaa", "Roboto Mono", "Vazirmatn";
     font-size: 1.5em;
@@ -80,6 +88,19 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.nameInput {
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid black;
+    margin-right: 1rem;
+    margin-top: 3rem;
+    text-align: center;
+    font-size: 5rem;
+    font-family: var(--font);
+    font-weight: 500;
+    outline: none;
 }
 
 .App {

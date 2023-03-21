@@ -11,10 +11,15 @@ function LoginPage() {
         navigate("/game");
     };
     return (
-        <div>
-            <input type="text" id="nameInput" />
-            <button onClick={() => addNameToLocalStorage()}>Connect</button>
-        </div>
+        <>
+            <img className="logo" src="logo.png" alt="logo" />
+            <div>
+                <input type="text" id="nameInput" className="nameInput" placeholder="Enter Your Name" />
+                <button className="connectButton" onClick={() => addNameToLocalStorage()}>
+                    Connect
+                </button>
+            </div>
+        </>
     );
 }
 

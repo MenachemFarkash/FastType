@@ -3,6 +3,7 @@ import React from "react";
 function LeaderBoard() {
     return (
         <div>
+            <img className="logo" src="logo.png" alt="logo" />
             <h1>Record Table</h1>
             <table>
                 <thead>

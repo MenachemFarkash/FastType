@@ -1,9 +1,9 @@
-import logo from "../logo.svg";
 import "../App.css";
 import { useState, useRef, useEffect } from "react";
 import { mostCommonWords } from "../Words/english";
 import { FaRedo, FaCrown } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+// import logo from "../../public/logo.png";
 
 function App() {
     const navigate = useNavigate();
@@ -142,6 +142,7 @@ function App() {
     return (
         <div className="App">
             <header className="App-header">
+                <img className="logo" src="logo.png" />
                 <h2>
                     Hi <span className="userNameHeader">{localStorage.getItem("name")}</span>, good luck
                 </h2>
