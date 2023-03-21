@@ -40,6 +40,11 @@
     font-weight: 400;
 }
 
+.actionButtons {
+    display: flex;
+    gap: 2rem;
+}
+
 .restartButton {
     margin-top: 1rem;
     cursor: pointer;
@@ -62,13 +67,23 @@
     cursor: pointer;
 }
 
-.App {
-    text-align: center;
+.userNameHeader {
+    color: rgb(60, 121, 144);
 }
 
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+.footer {
+    background-color: #171a1f;
+    height: 20vh;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.App {
+    text-align: center;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -83,7 +98,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     font-size: calc(10px + 2vmin);
     color: white;
 }
