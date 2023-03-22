@@ -2,6 +2,14 @@
 :root {
     --font: "Comfortaa", "Roboto Mono", "Vazirmatn";
 }
+
+.progress {
+    position: fixed;
+    top: 0;
+    height: 3px;
+    background-color: rgb(201, 134, 205);
+}
+
 .logo {
     position: fixed;
     left: 0;
@@ -9,15 +17,16 @@
     width: 5em;
 }
 .mainText {
-    font-family: "Comfortaa", "Roboto Mono", "Vazirmatn";
+    font-family: var(--font);
     font-size: 1.5em;
     font-variant: no-common-ligatures;
     line-height: 1.2em;
     font-weight: 400;
     width: 75%;
+    min-height: fit-content;
     text-align: justify;
     max-lines: 2;
-    padding: 2rem;
+    padding-bottom: 0;
     border-radius: 7px;
 }
 
@@ -44,32 +53,57 @@
 .wpm {
     font-size: 4rem;
     line-height: 4rem;
-    font-family: "Comfortaa", "Roboto Mono", "Vazirmatn";
+    font-family: var(--font);
     font-weight: 400;
 }
 
 .actionButtons {
+    position: fixed;
+    bottom: 2em;
     display: flex;
     gap: 2rem;
+    background-color: #171a1f56;
+    padding: 1em;
+    border-radius: 7px;
+    min-width: 20vw;
+    min-height: 10vh;
 }
 
 .restartButton {
     margin-top: 1rem;
     cursor: pointer;
+    padding-top: 0.5em;
+    border-radius: 15px;
+    padding-inline: 0.1em;
 }
+
 .restartButton p {
     margin-top: -0.5rem;
     font-size: 80%;
 }
 
+.restartButton:hover,
+.restartButton:focus {
+    background-color: #6b6f7843;
+    transition: all 0.2s;
+    outline: none;
+}
+
 .wordCountButtons {
     display: flex;
+    justify-content: center;
     gap: 0.5rem;
+}
+
+.wordCountContainer p {
+    margin-bottom: 0.2em;
 }
 
 .wordCountButtons button {
     border: none;
-    font-family: "Comfortaa", "Roboto Mono", "Vazirmatn";
+    font-size: 50%;
+    height: fit-content;
+    font-family: var(--font);
     padding: 0.5rem;
     background-color: rgb(213, 231, 231);
     cursor: pointer;
@@ -81,10 +115,11 @@
 
 .footer {
     background-color: #171a1f;
-    height: 20vh;
+    height: 10%;
     width: 100%;
     position: fixed;
     bottom: 0;
+    padding: 1em;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -116,8 +151,12 @@
     cursor: pointer;
 }
 
-.leaderBoardTable thead > th,
-.leaderBoardTable > tbody td {
+.leaderBoardTable {
+    border-collapse: collapse;
+}
+
+.leaderBoardTable thead > tr > th,
+.leaderBoardTable > tbody > tr > td {
     border: 1px solid black;
     border-collapse: separate;
     padding: 1rem;
@@ -136,7 +175,8 @@
 
 .App-header {
     background-color: #282c34;
-    min-height: 100vh;
+    max-height: 100vh;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;

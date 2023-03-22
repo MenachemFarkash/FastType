@@ -32,42 +32,47 @@ function App() {
     }, [wordCount]);
 
     function handleKeyDown(event) {
-        console.log(event.key);
         setIsPlaying(true);
-        if (isPlaying === true) {
-            if (event.key === "Backspace") {
-                setCurrentChar(currentChar - 1);
-                letters.splice(-1);
-                setActiveChar(activeChar - 1);
-            } else if (event.key === " ") {
-                document.getElementById("mainInput").value = "";
-                letters.push(event.key);
-                setCurrentChar(currentChar + 1);
-                setActiveChar(activeChar + 1);
-            } else {
-                if (currentChar === 0) {
-                    setStartTime(Date.now());
-                }
-                // Check if the char is correct or not
-                if (event.key === currentPhrase[currentChar]) {
-                    setCorrectChars(correctChars + 1);
+        if (event.key === "Tab" || event.key === "Shift") {
+        } else {
+            if (isPlaying === true) {
+                if (event.key === "Backspace") {
+                    setCurrentChar(currentChar - 1);
+                    letters.splice(-1);
+                    setActiveChar(activeChar - 1);
+                } else if (event.key === " ") {
+                    document.getElementById("mainInput").value = "";
+                    letters.push(event.key);
+                    setCurrentChar(currentChar + 1);
+                    setActiveChar(activeChar + 1);
                 } else {
-                    setIncorrectChars(incorrectChars + 1);
-                }
-                letters.push(event.key);
-                setCurrentChar(currentChar + 1);
-                setActiveChar(activeChar + 1);
+                    if (currentChar === 0) {
+                        setStartTime(Date.now());
+                    }
+                    try {
+                        console.log(document.getElementById("progress"));
+                    } catch (error) {}
+                    // Check if the char is correct or not
+                    if (event.key === currentPhrase[currentChar]) {
+                        setCorrectChars(correctChars + 1);
+                    } else {
+                        setIncorrectChars(incorrectChars + 1);
+                    }
+                    letters.push(event.key);
+                    setCurrentChar(currentChar + 1);
+                    setActiveChar(activeChar + 1);
 
-                // check if ended typing
-                if (currentChar === currentPhrase.length - 2) {
-                    const timeTaken = (Date.now() - startTime) / 1000;
-                    setIsPlaying(false);
+                    // check if ended typing
+                    if (currentChar === currentPhrase.length - 2) {
+                        const timeTaken = (Date.now() - startTime) / 1000;
+                        setIsPlaying(false);
 
-                    setEndTime((prevNumber) => {
-                        const newNumber = prevNumber + Date.now();
-                        return newNumber;
-                    });
-                    endGame(timeTaken, endTime);
+                        setEndTime((prevNumber) => {
+                            const newNumber = prevNumber + Date.now();
+                            return newNumber;
+                        });
+                        endGame(timeTaken, endTime);
+                    }
                 }
             }
         }
@@ -109,8 +114,6 @@ function App() {
         getAccuracy();
         const WPM = ((letters.length / 5 / time) * 60).toFixed(2);
         setWordsPerMinute(WPM);
-        console.log(time);
-        console.log(wordsPerMinute);
         localStorage.setItem("wordCount", wordCount);
         setIsPlaying(false);
         try {
@@ -134,9 +137,10 @@ function App() {
         setCurrentChar(0);
         setLetters([]);
         setIsPlaying(true);
-        document.getElementById("mainInput").value = "";
-        elementPocus.current.focus();
-        console.log(elementPocus.current);
+        try {
+            document.getElementById("mainInput").value = "";
+            elementPocus.current.focus();
+        } catch (error) {}
     };
 
     return (
@@ -146,40 +150,79 @@ function App() {
                 <h2>
                     Hi <span className="userNameHeader">{localStorage.getItem("name")}</span>, good luck
                 </h2>
-                <h2 className="mainText">
-                    {currentPhrase.map((letter, index) => {
-                        return (
-                            <>
-                                <span
-                                    key={index}
-                                    style={
-                                        letters[index] === currentPhrase[index]
-                                            ? styles.correct
-                                            : letters[index] && letters[index] !== currentPhrase[index]
-                                            ? styles.incorrect
-                                            : index === activeChar
-                                            ? styles.active
-                                            : styles.default
-                                    }
-                                    className={index === activeChar ? "active" : ""}
-                                >
-                                    {letter}
-                                </span>
-                            </>
-                        );
-                    })}
-                </h2>
-                <input
-                    ref={elementPocus}
-                    tabIndex={1}
-                    autoFocus
-                    onKeyDown={(event) => handleKeyDown(event)}
-                    id="mainInput"
-                    type="text"
-                    className="mainInput"
-                    placeholder="Type Here"
-                />
-                {endTime > 0 && (
+                {isPlaying === true ? (
+                    <>
+                        <div
+                            className="progress"
+                            style={{ width: (letters.length / currentPhrase.length) * 100 + "vw" }}
+                            id="progress"
+                        ></div>
+                        <h2 className="mainText">
+                            {currentPhrase.map((letter, index) => {
+                                return (
+                                    <>
+                                        <span
+                                            key={index}
+                                            style={
+                                                letters[index] === currentPhrase[index]
+                                                    ? styles.correct
+                                                    : letters[index] &&
+                                                      letters[index] !== currentPhrase[index]
+                                                    ? styles.incorrect
+                                                    : index === activeChar
+                                                    ? styles.active
+                                                    : styles.default
+                                            }
+                                            className={index === activeChar ? "active" : ""}
+                                        >
+                                            {letter}
+                                        </span>
+                                    </>
+                                );
+                            })}
+                        </h2>
+                        <input
+                            ref={elementPocus}
+                            tabIndex={1}
+                            autoFocus
+                            onKeyDown={(event) => handleKeyDown(event)}
+                            id="mainInput"
+                            type="text"
+                            className="mainInput"
+                            placeholder="Type Here"
+                        />
+                        <div
+                            className="restartButton"
+                            tabIndex={2}
+                            onKeyDown={() => restart()}
+                            onClick={() => restart()}
+                        >
+                            <FaRedo />
+                            <p>restart</p>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <h2 className="accuracyTitle">
+                            Accuracy: <span className="accuracy">{accuracy}</span>%
+                        </h2>
+                        <br />
+                        <h2 className="wpmTitle">
+                            WPM: <span className="wpm">{wordsPerMinute}</span>
+                        </h2>
+                        <div
+                            className="restartButton"
+                            tabIndex={2}
+                            onKeyDown={() => restart()}
+                            onClick={() => restart()}
+                        >
+                            <FaRedo />
+                            <p>restart</p>
+                        </div>
+                    </>
+                )}
+
+                {/* {endTime > 0 && (
                     <>
                         <h2 className="accuracyTitle">
                             Accuracy: <span className="accuracy">{accuracy}</span>%
@@ -189,20 +232,53 @@ function App() {
                             WPM: <span className="wpm">{wordsPerMinute}</span>
                         </h2>
                     </>
-                )}
+                )} */}
                 <div className="actionButtons">
-                    <div className="restartButton">
-                        <FaRedo tabIndex={2} onKeyDown={() => restart()} onClick={() => restart()} />
-                        <p>restart</p>
-                    </div>
                     <div className="restartButton">
                         <FaCrown tabIndex={3} onClick={() => navigate("/leaderBoard")} />
                         <p>
                             Leader <br /> Board
                         </p>
                     </div>
+                    <div className="wordCountContainer">
+                        <p>Word Count</p>
+                        <div className="wordCountButtons">
+                            <button
+                                type="text"
+                                onClick={() => {
+                                    setWordCount(10);
+                                }}
+                            >
+                                10
+                            </button>
+                            <button
+                                type="text"
+                                onClick={(ev) => {
+                                    setWordCount(15);
+                                }}
+                            >
+                                15
+                            </button>
+                            <button
+                                type="text"
+                                onClick={(ev) => {
+                                    setWordCount(20);
+                                }}
+                            >
+                                20
+                            </button>
+                            <button
+                                type="text"
+                                onClick={(ev) => {
+                                    setWordCount(30);
+                                }}
+                            >
+                                30
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <footer className="footer">
+                {/* <footer className="footer">
                     <h3>Choose Word Count</h3>
                     <div className="wordCountButtons">
                         <button
@@ -238,7 +314,7 @@ function App() {
                             30
                         </button>
                     </div>
-                </footer>
+                </footer> */}
             </header>
         </div>
     );

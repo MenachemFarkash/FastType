@@ -7,9 +7,11 @@ function LeaderBoard() {
             <h1>Record Table</h1>
             <table className="leaderBoardTable">
                 <thead>
-                    <th>name</th>
-                    <th>accuracy</th>
-                    <th>WPM</th>
+                    <tr>
+                        <th>name</th>
+                        <th>accuracy</th>
+                        <th>WPM</th>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr>
