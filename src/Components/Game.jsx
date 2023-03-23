@@ -119,8 +119,11 @@ function App() {
         try {
             if (WPM > localStorage.getItem("record") && localStorage.getItem("wordCount") == wordCount) {
                 localStorage.setItem("record", WPM);
-            } else if (localStorage.getItem("wordCount") !== wordCount) {
+                console.log("new record");
+                //check if there is a username like the current local storage one
+            } else if (localStorage.getItem("wordCount") != wordCount) {
                 localStorage.setItem("record", WPM);
+                console.log("new word count");
             } else {
             }
         } catch (error) {}

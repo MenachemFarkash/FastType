@@ -161,6 +161,7 @@
     border-collapse: separate;
     padding: 1rem;
     text-align: center;
+    text-transform: capitalize;
 }
 
 .App {
@@ -182,6 +183,7 @@
     align-items: center;
     font-size: calc(10px + 2vmin);
     color: white;
+    text-align: center;
 }
 
 .App-link {

@@ -1,17 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import SERVER_URL from "../sensitiveStaff/env";
 
 import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
+    const [avaliable, setAvaliable] = useState(true);
     const navigate = useNavigate();
 
-    const addNameToLocalStorage = () => {
-        const name = document.getElementById("nameInput").value;
-        localStorage.setItem("name", name);
-        if (name === "") {
-            alert("Please enter a name");
-        } else {
+    useEffect(() => {
+        if (localStorage.getItem("name") !== null) {
             navigate("/game");
+        }
+    }, []);
+
+    const checkIfNameTaken = async (name) => {
+        const isTaken = await axios.post(SERVER_URL + "/login", { name });
+        return isTaken.data;
+    };
+
+    const addNameToLocalStorage = async () => {
+        const name = document.getElementById("nameInput").value;
+        if ((await checkIfNameTaken(name)) === true) {
+            localStorage.setItem("name", name);
+            if (name === "") {
+                alert("Please enter a name");
+            } else {
+                setAvaliable(true);
+                navigate("/game");
+            }
+        } else {
+            setAvaliable(false);
+            console.log("name is alredy in use");
         }
     };
     return (
@@ -23,6 +43,7 @@ function LoginPage() {
                     Connect
                 </button>
             </div>
+            {avaliable === true ? "" : <p>name is alredy in use</p>}
         </>
     );
 }
