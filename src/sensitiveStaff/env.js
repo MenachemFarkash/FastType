@@ -1,3 +1,3 @@
-const SERVER_URL = "http://localhost:4000";
+const SERVER_URL = "https://donkeytype-server.onrender.com";
 
 module.exports = SERVER_URL;
