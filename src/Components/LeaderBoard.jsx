@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { FaArrowCircleLeft } from "react-icons/fa";
 import SERVER_URL from "../sensitiveStaff/env";
+import { useNavigate } from "react-router-dom";
 
 function LeaderBoard() {
+    const navigate = useNavigate();
     const [recordsList, setRecordsList] = useState([]);
     const getRecordsList = async () => {
         const records = await axios.get(SERVER_URL + "/records");
@@ -22,8 +25,8 @@ function LeaderBoard() {
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Accuracy</th>
                         <th>WPM</th>
+                        <th>Accuracy</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -31,13 +34,17 @@ function LeaderBoard() {
                         return (
                             <tr>
                                 <td>{record.name}</td>
-                                <td>{record.accuracy}</td>
-                                <td>{record.wpm}</td>
+                                <td>{record.w10}</td>
+                                <td>{record.a10}</td>
                             </tr>
                         );
                     })}
                 </tbody>
             </table>
+            <div className="restartButton" onClick={() => navigate("/game")}>
+                <FaArrowCircleLeft />
+                <p>return</p>
+            </div>
         </div>
     );
 }

@@ -3,15 +3,12 @@ import { useState, useRef, useEffect } from "react";
 import { mostCommonWords } from "../Words/english";
 import { FaRedo, FaCrown } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-// import logo from "../../public/logo.png";
+import SERVER_URL from "../sensitiveStaff/env";
+import axios from "axios";
 
 function App() {
     const navigate = useNavigate();
-    const phrases = [
-        "the quick brown fox jumps over the lazy dog",
-        "a stitch in time saves nine",
-        "all's fair in love and war",
-    ];
+
     const [wordCount, setWordCount] = useState(10);
     const [currentPhrase, setCurrentPhrase] = useState(() => createPhrase());
     const [currentChar, setCurrentChar] = useState(0);
@@ -19,6 +16,7 @@ function App() {
     const [endTime, setEndTime] = useState(0);
     const [correctChars, setCorrectChars] = useState(0);
     const [incorrectChars, setIncorrectChars] = useState(0);
+    const [acIncorrectChars, setAcIncorrectChars] = useState(0);
     const [wordsPerMinute, setWordsPerMinute] = useState(0);
     const [accuracy, setAccuracy] = useState(0);
     const [letters, setLetters] = useState([]);
@@ -33,12 +31,15 @@ function App() {
 
     function handleKeyDown(event) {
         setIsPlaying(true);
-        if (event.key === "Tab" || event.key === "Shift") {
+        if (event.key === "Tab" || event.key === "Shift" || event.key === "Alt") {
         } else {
             if (isPlaying === true) {
                 if (event.key === "Backspace") {
                     setCurrentChar(currentChar - 1);
                     letters.splice(-1);
+                    if (incorrectChars > 0) {
+                        setIncorrectChars((prevNumber) => prevNumber - 1);
+                    }
                     setActiveChar(activeChar - 1);
                 } else if (event.key === " ") {
                     document.getElementById("mainInput").value = "";
@@ -57,6 +58,7 @@ function App() {
                         setCorrectChars(correctChars + 1);
                     } else {
                         setIncorrectChars(incorrectChars + 1);
+                        setAcIncorrectChars(acIncorrectChars + 1);
                     }
                     letters.push(event.key);
                     setCurrentChar(currentChar + 1);
@@ -106,27 +108,38 @@ function App() {
         if (totalChars === 0) {
             return 0;
         }
-        setAccuracy(Math.round((correctChars / totalChars) * 100));
-        return Math.round((correctChars / totalChars) * 100);
+        setAccuracy(Math.round(((correctChars - acIncorrectChars) / totalChars) * 100));
+        return Math.round(((correctChars - acIncorrectChars) / totalChars) * 100);
     }
 
     function endGame(time) {
-        getAccuracy();
-        const WPM = ((letters.length / 5 / time) * 60).toFixed(2);
-        setWordsPerMinute(WPM);
-        localStorage.setItem("wordCount", wordCount);
-        setIsPlaying(false);
-        try {
-            if (WPM > localStorage.getItem("record") && localStorage.getItem("wordCount") == wordCount) {
-                localStorage.setItem("record", WPM);
-                console.log("new record");
-                //check if there is a username like the current local storage one
-            } else if (localStorage.getItem("wordCount") != wordCount) {
-                localStorage.setItem("record", WPM);
-                console.log("new word count");
-            } else {
-            }
-        } catch (error) {}
+        if (getAccuracy() < 50) {
+            setIsPlaying("Failed");
+        } else {
+            const WPM = (((letters.length / 5 - incorrectChars) / time) * 60).toFixed(2);
+            console.log(incorrectChars);
+            setWordsPerMinute(WPM);
+            localStorage.setItem("wordCount", wordCount);
+            setIsPlaying(false);
+            try {
+                if (
+                    WPM > localStorage.getItem(`w${wordCount}`) &&
+                    localStorage.getItem("wordCount") == wordCount
+                ) {
+                    localStorage.setItem(`w${wordCount}`, WPM);
+                    localStorage.setItem(`a${wordCount}`, getAccuracy());
+                    postRecord();
+                    console.log(localStorage);
+                    //check if there is a username like the current local storage one
+                } else if (localStorage.getItem("wordCount") != wordCount) {
+                    localStorage.setItem(`w${wordCount}`, WPM);
+                    localStorage.setItem(`a${wordCount}`, getAccuracy());
+                    postRecord();
+                    console.log("new word count");
+                } else {
+                }
+            } catch (error) {}
+        }
     }
 
     const restart = () => {
@@ -134,6 +147,7 @@ function App() {
         setActiveChar(0);
         setCorrectChars(0);
         setIncorrectChars(0);
+        setAcIncorrectChars(0);
         setStartTime(null);
         setEndTime(0);
         setWordsPerMinute(0);
@@ -144,6 +158,24 @@ function App() {
             document.getElementById("mainInput").value = "";
             elementPocus.current.focus();
         } catch (error) {}
+    };
+
+    const postRecord = async () => {
+        const { name, a10, a15, a20, a30, w10, w15, w20, w30 } = localStorage;
+        if (a10 > 50 || a15 > 50 || a20 > 50 || a30 > 50) {
+            const record = await axios.post(SERVER_URL + "/records", {
+                name,
+                a10,
+                a15,
+                a20,
+                a30,
+                w10,
+                w15,
+                w20,
+                w30,
+            });
+            console.log(record);
+        }
     };
 
     return (
@@ -204,7 +236,7 @@ function App() {
                             <p>restart</p>
                         </div>
                     </>
-                ) : (
+                ) : isPlaying === false ? (
                     <>
                         <h2 className="accuracyTitle">
                             Accuracy: <span className="accuracy">{accuracy}</span>%
@@ -223,19 +255,26 @@ function App() {
                             <p>restart</p>
                         </div>
                     </>
+                ) : isPlaying === "Failed" ? (
+                    <>
+                        <h1>
+                            You Failed
+                            <br /> Try To Be More Accurate
+                        </h1>
+                        <div
+                            className="restartButton"
+                            tabIndex={2}
+                            onKeyDown={() => restart()}
+                            onClick={() => restart()}
+                        >
+                            <FaRedo />
+                            <p>restart</p>
+                        </div>
+                    </>
+                ) : (
+                    ""
                 )}
 
-                {/* {endTime > 0 && (
-                    <>
-                        <h2 className="accuracyTitle">
-                            Accuracy: <span className="accuracy">{accuracy}</span>%
-                        </h2>
-                        <br />
-                        <h2 className="wpmTitle">
-                            WPM: <span className="wpm">{wordsPerMinute}</span>
-                        </h2>
-                    </>
-                )} */}
                 <div className="actionButtons">
                     <div className="restartButton">
                         <FaCrown tabIndex={3} onClick={() => navigate("/leaderBoard")} />
