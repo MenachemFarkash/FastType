@@ -34,7 +34,7 @@ function LeaderBoard() {
                     {recordsList?.map((record, index) => {
                         return (
                             <tr>
-                                <td>{index}</td>
+                                <td>{index + 1}</td>
                                 <td>{record.name}</td>
                                 <td>{record.w10}</td>
                                 <td>{record.a10}</td>
