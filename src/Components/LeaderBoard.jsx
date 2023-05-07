@@ -11,7 +11,7 @@ function LeaderBoard() {
         const records = await axios.get(SERVER_URL + "/records");
         console.log(records.data);
         setRecordsList(records.data);
-        return records.data;
+        return records.data.sort((a, b) => b.w10 - a.w10);
     };
 
     useEffect(() => {
@@ -24,6 +24,7 @@ function LeaderBoard() {
             <table className="leaderBoardTable">
                 <thead>
                     <tr>
+                        <th>#</th>
                         <th>Name</th>
                         <th>WPM</th>
                         <th>Accuracy</th>
@@ -33,6 +34,7 @@ function LeaderBoard() {
                     {recordsList?.map((record, index) => {
                         return (
                             <tr>
+                                <td>{index}</td>
                                 <td>{record.name}</td>
                                 <td>{record.w10}</td>
                                 <td>{record.a10}</td>
